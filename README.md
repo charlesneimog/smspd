@@ -1,6 +1,5 @@
 ## SMS for Pure Data (Pd)
-version 0.95 -- August 11, 2009 
-* updated by Charles K. Neimog in 15-dec-2022
+_version 0.95 -- August 11, 2009_ |||    _updated by Charles K. Neimog in 15-dec-2022_
 
 ### OVERVIEW
 smspd is an external library of externals for Miller Puckette's PureData ("pd"). 
