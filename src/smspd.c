@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  */
-#include "sms.h"
+
 #include "smspd.h"
 #include <string.h>
 
@@ -27,17 +27,20 @@
 
 static t_class *sms_class;
 
+// ===========================
 typedef struct sms 
 {
   t_object t_obj;
 } t_sms;
 
+// ===========================
 static void *sms_new(void)
 {
   t_sms *x = (t_sms *)pd_new(sms_class);
   return (x);
 }
 
+// ===========================
 void sms_setup(void) 
 {
 
@@ -51,12 +54,13 @@ void sms_setup(void)
         smsedit_setup();
 
         if(SMS_VERSION < REQUIRE_LIBSMS_VERSION)
-                error("libsms is too old (version %1.1f, things might not work", SMS_VERSION);
+                post("libsms is too old (version %1.1f, things might not work", SMS_VERSION);
         else
                 post("smspd using libsms version %1.1f", SMS_VERSION);
 
 }
 
+// ===========================
 /* -_-_-_-_-_-_-_-_-_-_-helper functions -_-_-_-_-_-_-_-_-_-_- */
 
 /* method for opening file in canvas directory. */
@@ -103,7 +107,7 @@ t_smsbuf* smspd_buffer(t_symbol *bufname)
 
 /*this function seems to not be copying everything... or else it would be usable
   before copying the buffer from file (it crashes if it is) */
-void CopySmsHeader( SMS_Header *pFileHeader, SMS_Header *pBufHeader, char *paramString  )
+void CopySmsHeader(SMS_Header *pFileHeader, SMS_Header *pBufHeader, char *paramString  )
 {
         sms_initHeader (pBufHeader);
 
@@ -120,9 +124,9 @@ void CopySmsHeader( SMS_Header *pFileHeader, SMS_Header *pBufHeader, char *param
    
         pBufHeader->iFrameBSize = sms_frameSizeB(pBufHeader);
 
-        pBufHeader->nTextCharacters = pFileHeader->nTextCharacters;
-        strcpy(paramString, pFileHeader->pChTextCharacters);
-        pBufHeader->pChTextCharacters = paramString;
+        // pBufHeader->nTextCharacters = pFileHeader->nTextCharacters;
+        // strcpy(paramString, pFileHeader->pChTextCharacters);
+        // pBufHeader->pChTextCharacters = paramString;
         
 }
 
@@ -321,8 +325,8 @@ static void smsbuf_print(t_smsbuf *x)
                 post("Envelope Coefficients: %d", x->smsHeader.nEnvCoeff);
                 post("Original Signal Sampling Rate = %d", x->smsHeader.iSamplingRate);  
 
-                if (x->smsHeader.nTextCharacters > 0)
-                        post("ANALISIS ARGUMENTS: %s", x->smsHeader.pChTextCharacters);
+                // if (x->smsHeader.nTextCharacters > 0)
+                //         post("ANALISIS ARGUMENTS: %s", x->smsHeader.pChTextCharacters);
         }
         else pd_error(x, "smsbuf (%s) not ready", x->bufname->s_name);
 }

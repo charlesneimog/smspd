@@ -1,0 +1,228 @@
+# use emacs org-mode for pretty colors
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+libsms work log
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+* Todo list
+** TODO mispelled sms_scalerTempered (should be scalar :)
+** TODO document new smsSynth option to interpolate frames or not
+** TODO add harmonic deviator to modify.c
+   - calculates difference from normal harmonic for all partials
+   - scales this up or down
+** TODO add harmonizer to modify.c
+   - should be as easy as adding sets of partial frequency to the original
+   - [ ] but how to present a new frame with more partials to sms_modify()?
+** TODO why does sms_getHeader() require a double pointer to SMS_Header?
+   - this is making things ugly in [smsbuf] - needs to copy the header over
+** TODO simplify frame allocation
+   - right now, there is sms_allocFrame ans sms_allocFrameH
+   - allocFrame should only be an internal function, wrapped by more specific
+     functions for allocating from analysis or synthesis
+   - [ ] maybe take more information from SMS_Data?
+         - such as nTracks, nCoeff, nEnvCoeff
+** TODO [#A] Residual Resynthesis
+*** temp solution, just store output DFT from getResidual
+      - [X] memory allocation and storage
+      - [X] in analysis, check if -c coeff is size power2
+      - [ ] plot stored residual.. determine where to put function for resynthesis
+      - [ ] how to deal with sms_interpolateFrames()?
+            - disabled for now..
+      - [ ] in synthesis, check if the synthesis DFT is the same size as analysis 
+      - if either aren't fix it
+      - for DFT, size pFStocCoeff = 2x nCoeff (real,imag pairs in sequence)
+      - synthesize to waveform, then apply amplitude adjustments
+      - from here, will have to think of how to deal with interpolation
+** TODO [#B] make testing scripts
+    - calls different functions with various types of soundfiles
+    - either plot old and new or does a quick envelope check
+    - should be short ones (fast) and long ones (robust)
+    - also to analysis with electronic tones and known results
+    - writes output files to seperate folder so things don't get cluttered
+** TODO SWIG / Python:
+*** TODO make python synthesis script with SWIG wrappers
+*** TODO even firster, redo printWindow in python
+*** first start by copying smsSynth 
+*** then add time-based manipulations (envelopes, pitch/time adjustments)
+*** TODO set of python plotting tools
+     - [ ] plot waveform/spectral centroid combination
+          - like freesound.org
+     - [ ] use SWIG wrapper instead of yaml
+*** TODO [#A] make it compile from main scons script
+*** TODO tie soundIO functions to SMS_Sound stuct
+*** TODO make a function for returning a list of SMS_Data frames
+      - [ ] optional arguments to start with: start, stop frames, residual=True/False
+*** TODO draw a map of where pAnalParams goes throughout sms_analysis
+    - [ ] determine if it is best to pass this pointer or a pointer in the nested structure
+        - ex. SMS_PeakParams or SMS_AnalParams
+*** TODO find out how to access arrays in structures
+    - helper functions within structure?
+*** TODO find out how to add doc strings
+*** TODO find out how to use exceptions
+    - [ ] with functions that return an err integer, can I check this in the inlined code, then
+        call an exception there? would reduce lots of python code
+        - but the current error checking will not conflict with this if it is changed
+          ( will just always return nothing and error checking will depend on the exceptions)
+** VERIFY remove all calloc's from looping functions
+   - there are many in the analysis, work on one at a time and test
+   - can push them into SMS_AnalParams 
+   - can do some transfers in place (waveform-> spectrum)
+** TODO make function for calculating rms energy of an array
+   - [ ] rename to sms_arrayRms or something with the name array
+** VERIFY finish switch float's to sfloat's
+   - so the lib can be compiled in double point precision
+   - started this with sed but it missed alot
+** TODO organization of main analysis routines :anal:
+*** functions in analysis.c:
+    - seems 4 functions will fit:
+**** analyzeDet - just the sinusoids (peaks + harm detection)  of one frame
+**** analyzeRes - just residual, needs analyzeDet first
+**** analyzeFrame - will do the two above for one frame of data
+**** analyze -  circular buffer /w adaptive window size
+         - continuation done here?
+         - should reAnalyze code just be in here, 
+           thereby calling analyzeFrame 2x (if necessary)?
+** TODO pull out fResidualPercentage into its own function
+   - no reason why it should be in sms_residual if it will not be used
+      - its not being used right now
+** TODO convert error checking statements to use sms_error()
+   - [ ] remove the SMS_ERRORS typedefs - this system if cumbersome
+          - lots in sms.c
+   - [ ] remove int returns (now can check for an error with sms_errorCheck() if you want)
+** TODO documentation 
+*** VERIFY double check smsAnal man/documentation, update smsSynth man
+    - [ ] limit on nStocCoeff
+*** VERIFY double check example parameters used
+** VERIFY clean/re-organize spectrum.c
+   - some calles pass a null pointer to a non-existent phase spectrum
+   ( because phases are not stored in the model)
+   - these calls should call a different function, thereby avoiding the 
+   if check for every sample
+** TODO Doxygen todo list
+*** TODO version number
+*** TODO  name changes, etc.
+*** TODO  talk about sfloat in API and sms_error()
+** TODO stochastic resynthesis needs a closer look :synth:
+*** TODO always turns out louder than the original
+    - it appears pSmsData->pFStocGain is getting multiplied through twice
+    - this multiplier needs work
+    - [ ] also, why is it a floating-point pointer instead of just a float?
+*** TODO Hamming() is messed up,  see Bugs below
+*** TODO make sure different samplerates produce similar spectrums
+    - originally the samplerate was set at 44100
+    -  now it is variable
+    - [ ] make plots to compare the coefficients at different samplerates
+    - [ ] determine why certain constants are within StochSynthApprox (smsSynthesis.c)
+*** TODO make sure nStocCoeff is set right for different framerates
+    - right now, coefficients are limited to SR / FR, rounded up to the nearest pow2
+    - when nCoeff is set higher than this, artifacts are appearing in the residual synthesis
+    - [ ] need to check at the beginning and limit the coeffcients
+** TODO harmonic Dection :anal:
+     - don't think it is actually two-way mismatch
+*** TODO [#A] organize so different f0 detection algos can be used
+        - [ ] organize so error statistic values can be found from outside
+            - can then be plotted, for comparison to other algos
+*** TODO [#A] make an init function and SMS_HarmParams struct
+*** TODO [#B] port TWN algo from Octave code
+** TODO make Post-Processing functions :anal:
+*** should be included in analysis like programs
+    - return a pointer to another smsData structure, or file?
+*** TODO normalize deterministic magnitude
+    - maybe during smsSineSynth, calculate max magnitude
+*** TODO contains a smsResample 
+*** TODO contains smsClean code
+    - [ ] remove unused tracks
+     - iterates over the entire file to connect short tracks
+     - this is different than the built in cleaning in smsAnalysis because it
+       already has the entire analysis
+*** TODO Spectral envelope
+**** TODO iterative method?
+     - if iOrder == 0, start with 25 and increase until peaks are covered well enough
+** TODO re-analysis
+   - the problem was SMS_ANAL_DELAY was not large enough, so not all of the
+     bad frames were being re-analyzed
+   - [ ] need to make this a member of SMS_AnalParams structur
+** TODO sort out track length terms 
+      - some are seconds, some samples, some frames
+      - [ ] make framerate of analysis specifieble by milleseconds instead of hz
+** TODO optimizing
+*** TODO resynthesize det+res with only 1 fft
+    - in the current implementation, the stochastic and deterministic are inverse-fft'ed
+      seperately
+    - will need to mulitply the stochastic spectrum by the inverse blackmann harris
+      window because the deterministic part uses this (see DAFX pg 36)
+*** TODO change standard math routines to floating point doubles
+      - should maybe wrap them in inlined function calls?
+      - could move all math functions to an inlined header file
+*** TODO remove all calloc's/malloc's happening per function call
+         - wrap them using the static int check
+*** TODO  table lookup for dB conversion
+* Concept of soft vs. hard modifies
+  - use modify in smssynth~ to edit soft modifies
+  - use it in smsedit~ to hard edit
+  - then, all modificatins end up in modify.c
+* Questions
+** some re-syntheses are clipping, others are lower in mag, why?
+** move interpolate frames into a global function?
+   - would require another frame struct in synthParams
+** why is nFrames nSamples/iHopsize + 3? why + 3?
+** what is the best way to convert from mag to db?
+   - 0:1 -> 0:100?
+   - normalize maximum to 0?
+      - if this is the case, should there be a loudness measurement too?
+** why not approximate residual spectrum in dB?
+** Why is pre-emphasis built into sms_fillSoundBuffer?
+   - is this a high-pass filter? what is this pre-emphasis / de-emphasis?
+* Bugs
+** peaks are only detected up to 1/2 of fHighestFreq
+** Python sms_getSound() cannot load arrays 
+   - [ ] first check what sizes do not load
+   - [ ] then make a similar command line program to do the same, see if it crashes
+         and where
+** changing framerate in barbarie.wav (amp exam) causes seg fault
+** large analysis files
+    - ex. the 30 second long nightinggale sample
+* Wish list
+** residual 'melding'
+*** methods:
+    - time-domain comb filter
+    - frequency domain interpolation around sinusoidal peaks
+** improvement of inharmonic analysis/synthesis
+   - is it being done right now?
+   - in other analysis programs, one has as many as 500 partials for enharmonic sounds
+   - why is smsAnal only producing < 100?
+** multiple analyses using machine learning
+** repetive analysis using dictionary storage of params / machine learning techniques
+   - can automate some parameters this way
+      - window size, harmonic /inharmpic, melody/note 
+** make analysis macros
+   - reduces the number of parameters one must set
+   - will have to do an in-depth analysis of the relationship of different parameters
+** transient model synthesis
+*** based on the Discrete Cosine Transform
+* Done list
+** DONE integrate spectral envelope estimation into sms_analyze()
+   - [X] add info on number of cep coeff in header
+   - [X] add structure to SMS_Anal
+   - [X] set data in smsAnal and sms_initAnalysis
+   - [X] allocate memory
+   - [X] make high level function for calling from sms_analysis
+   - [X] call from sms_analize()
+   - [X] add to print in smsToYaml / smsPrint (not yet smsPrint)
+   - [X] make python test script for exctracting envelope, compare to peaks/res 
+*** TODO store detected peaks in a static array
+    - only if non-zero
+    - if requested, add an anchor
+** DONE transpotion while maintaing spectral shape
+** DONE Spectral Envelope computation
+   - Scharz '97
+   - Discrete Cestrum analysis seems to be a good choice
+   - can represent as both spectrum coefficeints and (spline) breakpoints
+
+** DONE  fix window sizes
+   - all but Hanning are normalized so spectrum is normalized after DFT
+   - now there is a seperate function to normalize the window with its integral*2
+** DONE  use standard db conversion
+*** DONE set a mag thresh defaulted to .00001
+*** DONE store in linear
+** DONE make smsSynth transpose with sms_modify()
+** DONE re-do smsAnal command line parsing
+   - partially done, needs the rest of the commands implemented

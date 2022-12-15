@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  */
-#include "m_pd.h"
-#include "sms.h"
+
+
 #include "smspd.h"
 
 //#include <unistd.h> /* sleep() */
@@ -101,7 +101,7 @@ static void smssynth_buffer(t_smssynth *x, t_symbol *bufname)
         else if(x->verbose)
                 post("smssynth: [smsbuf %s] was successfully found ", x->bufname->s_name);
 
-        sms_initSynth( &x->smsbuf->smsHeader, &x->synthParams );
+        sms_initSynth(&x->smsbuf->smsHeader, &x->synthParams);
 
 	/* setup interpolated frame */
   	sms_allocFrameH (&x->smsbuf->smsHeader, &x->smsFrame);

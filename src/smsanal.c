@@ -19,13 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  */
-#include <m_pd.h>
-
-// Solve  unknown type name ‘__int64’
-
-#define __int64 long long
-
-
+#include "m_pd.h"
 #include "sms.h"
 #include "smspd.h"
 #include <pthread.h>

@@ -426,8 +426,8 @@ static void smsedit_verbose(t_smsedit *x, t_float flag)
 /* creator function */
 static void *smsedit_new(t_symbol *s, int argcount, t_atom *argvec)
 {
+        (void)*s;
         t_smsedit *x = (t_smsedit *)pd_new(smsedit_class);
-
         int i;
         x->smsbuf = NULL;
         x->verbose = 0;

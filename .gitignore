@@ -1,0 +1,7 @@
+*.o
+*.dll
+*.so
+*.a
+
+# remove build repository
+build

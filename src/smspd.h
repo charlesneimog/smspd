@@ -19,11 +19,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  */
-#ifndef smspd_h
-#define smspd_h
+// If PDSMS_H is not defined
+#ifndef PDSMS_H
+#define PDSMS_H
 
 #include "m_pd.h"
+#include "sms.h"
 
+// if *smsbuf_class is not defined
 t_class *smsbuf_class;
 
 typedef struct _smsbuf
@@ -62,4 +65,4 @@ t_smsbuf* smspd_buffer(t_symbol *bufname);
 // copy one sms header (such as from a file) to another ( the buffer).
 void CopySmsHeader( SMS_Header *pFileHeader, SMS_Header *pBufHeader, char *paramString  );
 
-#endif// smspd_h
+#endif
