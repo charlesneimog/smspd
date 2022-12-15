@@ -3,11 +3,6 @@ project(sms)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# ====================
-if(MINGW)
-    set_target_properties(sms PROPERTIES SUFFIX ".dll")
-endif()
-
 # Add the source files to the project
 file(GLOB_RECURSE SRC_FILES src/*.c)
 
