@@ -31,14 +31,8 @@
 
 
 // If Windows use strings.h from windows/strings.h
-#ifdef WIN32
-#include "./windows/strings.h"
-#include "./windows/sndfile.h"
-#else
 #include <strings.h>
 #include <sndfile.h>
-#endif
-
 
 
 #define SMS_VERSION 1.1 /*!< \brief version control number */
