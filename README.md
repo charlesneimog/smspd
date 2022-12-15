@@ -32,7 +32,9 @@ To see an overview of the set together, see sms-help.pd
    * `libvorbis-0.dll`
    * `libvorbisenc-2.dll`
    * `libgsl-27.dll`
-   * `libsms.dll`
+
+* And of course, you need to copy `libsms.dll` too...
+
 Yes, a lot of dependencies... 
 
 ### COPYING
