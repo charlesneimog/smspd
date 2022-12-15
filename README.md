@@ -23,9 +23,17 @@ To see an overview of the set together, see sms-help.pd
     * `cmake -G"MSYS Makefiles" ..`
     * `cmake --build .`
     * go to smspd folder and run `make`.
-    * From C:\msys64\mingw64\bin copy `libsndfile-1` and `libgsl-27.dll` to the same folder that `sms.dll`
-    * And of course, the `libsms.dll` do the same.
-
+* From C:\msys64\mingw64\bin put next to sms.dll:
+   * `libsndfile-1`
+   * `libFLAC.dll`
+   * `libgslcblas-0.dll`
+   * `libogg-0.dll`
+   * `libopus-0.dll`
+   * `libvorbis-0.dll`
+   * `libvorbisenc-2.dll`
+   * `libgsl-27.dll`
+   * `libsms.dll`
+Yes, a lot of dependencies... 
 
 ### COPYING
 For copying information, please see the file COPYING included with this package.
