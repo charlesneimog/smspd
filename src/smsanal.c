@@ -70,11 +70,15 @@ static void smsanal_verbose(t_smsanal *x, t_float flag)
 
 static void smsanal_buffer(t_smsanal *x, t_symbol *bufname)
 {
-        // get the pointer to the desired buffer (todo: still have to set the buffer symbol name)
+        // get the pointer to the desired buffer and store it in x->smsbuf
         x->smsbuf = (t_smsbuf *)pd_findbyclass(bufname, smsbuf_class);
+        
+        // post result of x->smsbuf
+        post("smsanal: buffer is %s", x->smsbuf->bufname->s_name);
 
         if(!x->smsbuf)
         {
+                // post("I am here");
                 pd_error(x, "smsanal: %s was not found", bufname->s_name);
                 return;
         }
@@ -716,7 +720,6 @@ static void *smsanal_new(t_symbol *s, int argcount, t_atom *argvec)
 
         int i;
         x->outlet_iFrame = outlet_new(&x->x_obj,  gensym("float"));
-
         x->canvas = canvas_getcurrent();
         x->ntracks = 30;
         x->smsbuf = NULL;
@@ -736,10 +739,10 @@ static void *smsanal_new(t_symbol *s, int argcount, t_atom *argvec)
         return (x);
 }
 
-static void smsanal_free(t_smsanal *x)
-{
+static void smsanal_free(t_smsanal *x){
         if(x->analyzed) sms_freeAnalysis(&x->anal_params);
 }
+
 void smsanal_setup(void)
 {
         smsanal_class = class_new(gensym("smsanal"), (t_newmethod)smsanal_new, 

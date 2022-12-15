@@ -390,7 +390,6 @@ static void smsbuf_verbose(t_smsbuf *x, t_float flag)
 static void *smsbuf_new(t_symbol *bufname)
 {
         t_smsbuf *x = (t_smsbuf *)pd_new(smsbuf_class);
-
         x->canvas = canvas_getcurrent();
         x->filename = NULL;
         x->nframes= 0;
@@ -406,8 +405,7 @@ static void *smsbuf_new(t_symbol *bufname)
         // ?? do in need to check if bufname already exists? ??
         pd_bind(&x->x_obj.ob_pd, bufname);
         x->bufname = bufname;
-        //post("smsbuf using bufname: %s", bufname->s_name);
-
+        
         sms_init();
     
         return (x);
