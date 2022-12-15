@@ -2,6 +2,8 @@
 *.dll
 *.so
 *.a
+*.wav
+# *.pd_linux
 
 # remove build repository
 build

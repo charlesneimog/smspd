@@ -23,7 +23,7 @@
 #ifndef PDSMS_H
 #define PDSMS_H
 
-#include "m_pd.h"
+#include <m_pd.h>
 #include "../libsms/src/sms.h"
 #include <string.h>
 #include <pthread.h>
