@@ -3,7 +3,7 @@
 *.so
 *.a
 *.wav
-# *.pd_linux
+*.pd_linux
 
 # remove build repository
 build
