@@ -22,7 +22,7 @@ To see an overview of the set together, see sms-help.pd
     * `mkdir build && cd build`
     * `cmake -G"MSYS Makefiles" ..`
     * `cmake --build .`
-    * go to smspd folder and run `make`.
+    * go to `smspd` folder and run `make`.
 * From C:\msys64\mingw64\bin put next to sms.dll:
    * `libsndfile-1`
    * `libFLAC.dll`
