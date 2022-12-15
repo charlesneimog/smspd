@@ -29,7 +29,6 @@
 
 static t_class *smsanal_class;
 
-
 typedef struct _smsanal
 {
         t_object x_obj; 

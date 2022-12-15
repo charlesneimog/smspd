@@ -24,12 +24,35 @@
 #define PDSMS_H
 
 #include "m_pd.h"
-#include "sms.h"
+#include "../libsms/src/sms.h"
 #include <string.h>
 #include <pthread.h>
 
 t_class *smsbuf_class;
-// t_class t_smsbuf;
+
+typedef struct _smsbuf
+{
+        t_object x_obj;
+        t_canvas *canvas;
+        t_symbol *filename;
+        t_symbol *bufname;
+        t_outlet *outlet1; /* data list */
+        t_outlet  *outlet2; /* info list (key/value pair)*/
+        t_atom oneTrack[10000]; // TODO dynamically allocate this
+        t_atom infolist[2];
+        int nframes; // TODO: use smsHeader.nFrames
+        int ready;
+        int verbose; 
+        int allocated; // TODO see if this is necessary (also have 'ready')
+	FILE *pSmsFile;
+        char param_string[1024]; //TODO get rid of this
+        SMS_Header smsHeader;
+        SMS_Data *smsData;
+        SMS_Data *smsData2; /* a backup of the data, for when editing and you want to revert */
+} t_smsbuf;
+
+
+
 
 /* -_-_-_-_-_-_- objects in the smspd library -_-_-_-_-_-_-_- */
 void smsbuf_setup(void);

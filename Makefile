@@ -6,20 +6,22 @@ lib.name = sms
 uname := $(shell uname -s)
 
 ifeq (MINGW,$(findstring MINGW,$(uname)))
-  cflags = -I ./libsms/src 
-  ldlibs = -L ./libsms/build/ -l sms
+  cflags = -I ./libsms/src -fPIC
+  ldlibs = -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
   SMS_DYNLIB = ./libsms/build/libsms.dll
   
 
 else ifeq (Linux,$(findstring Linux,$(uname)))
-  cflags = -I ./libsms/src 
-  ldlibs = -L ./libsms/build/ -l sms
-  SMS_DYNLIB = ./libsms/build/libsms.so
+  # allow multiple definition for all 
+
+  cflags = -I ./libsms/src -fPIC
+  ldlibs = -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
+  SMS_DYNLIB = ./libsms/build/libsms.so 
   
 
 else ifeq (Darwin,$(findstring Darwin,$(uname)))
-  cflags = -I ./libsms/src 
-  ldlibs = -L ./libsms/build/ -l sms
+  cflags = -I ./libsms/src -fPIC
+  ldlibs = -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
   SMS_DYNLIB = ./libsms/build/libsms.dylib
 
 else
