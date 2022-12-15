@@ -27,7 +27,7 @@ To see an overview of the set together, see sms-help.pd
     * And of course, the `libsms.dll` do the same.
 
 
-*** COPYING
+### COPYING
 For copying information, please see the file COPYING included with this package.
 
 Where to send Questions, Comments, Love and Support
