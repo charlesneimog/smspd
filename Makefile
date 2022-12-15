@@ -1,15 +1,46 @@
 # library name
-lib.name = library
+lib.name = sms
 
-# input source file (class name == source file basename)
-class.sources = smsanal.c
+# python libs 
 
-# cflags include libsms and sndfile
-cflags = -I C:/Users/Neimog/Git/libsms/src -I C:/msys64/mingw64/include/ -lsndfile
+uname := $(shell uname -s)
 
-# all extra files to be included in binary distribution of the library
-datafiles =
+ifeq (MINGW,$(findstring MINGW,$(uname)))
+  cflags = -I ./libsms/src 
+  ldlibs = -L ./libsms/build/ -l sms
+  SMS_DYNLIB = ./libsms/build/libsms.dll
+  
 
-# include Makefile.pdlibbuilder from submodule directory 'pd-lib-builder'
+else ifeq (Linux,$(findstring Linux,$(uname)))
+  cflags = -I ./libsms/src 
+  ldlibs = -L ./libsms/build/ -l sms
+  SMS_DYNLIB = ./libsms/build/libsms.so
+  
+
+else ifeq (Darwin,$(findstring Darwin,$(uname)))
+  cflags = -I ./libsms/src 
+  ldlibs = -L ./libsms/build/ -l sms
+  SMS_DYNLIB = ./libsms/build/libsms.dylib
+
+else
+  $(error "Unknown system type: $(uname)")
+  $(shell exit 1)
+
+endif
+
+# Define SMS lib
+
+# =================================== Sources ===================================
+
+sms.class.sources = src/smspd.c src/smssynth~.c  
+# With errors src/smsanal.c src/smsedit.c
+
+
+# =================================== Data ======================================
+
+datafiles = $(SMS_DYNLIB)
+
+# =================================== Pd Lib Builder =============================
+
 PDLIBBUILDER_DIR=./pd-lib-builder/
 include $(PDLIBBUILDER_DIR)/Makefile.pdlibbuilder
