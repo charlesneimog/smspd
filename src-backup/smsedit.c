@@ -19,11 +19,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  */
-#include "sms.h"
+
 #include "smspd.h"
 
 /* ------------------------ smsedit ----------------------------- */
-
 static t_class *smsedit_class;
 
 typedef struct _smsedit
@@ -33,6 +32,12 @@ typedef struct _smsedit
         t_symbol *bufname;
         int verbose;
 } t_smsedit;
+
+// What is the name of the t_smsedit 
+// _smsedit is the name of the struct
+
+
+
 
 static void smsedit_buffer(t_smsedit *x, t_symbol *bufname)
 {
@@ -426,8 +431,8 @@ static void smsedit_verbose(t_smsedit *x, t_float flag)
 /* creator function */
 static void *smsedit_new(t_symbol *s, int argcount, t_atom *argvec)
 {
+        (void)*s;
         t_smsedit *x = (t_smsedit *)pd_new(smsedit_class);
-
         int i;
         x->smsbuf = NULL;
         x->verbose = 0;

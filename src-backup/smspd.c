@@ -19,25 +19,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  */
-#include "sms.h"
+
 #include "smspd.h"
-#include <string.h>
 
 #define REQUIRE_LIBSMS_VERSION 1.1
 
 static t_class *sms_class;
 
+// ===========================
 typedef struct sms 
 {
   t_object t_obj;
 } t_sms;
 
+// ===========================
 static void *sms_new(void)
 {
   t_sms *x = (t_sms *)pd_new(sms_class);
   return (x);
 }
 
+// ===========================
 void sms_setup(void) 
 {
 
@@ -51,12 +53,13 @@ void sms_setup(void)
         smsedit_setup();
 
         if(SMS_VERSION < REQUIRE_LIBSMS_VERSION)
-                error("libsms is too old (version %1.1f, things might not work", SMS_VERSION);
+                post("libsms is too old (version %1.1f, things might not work", SMS_VERSION);
         else
                 post("smspd using libsms version %1.1f", SMS_VERSION);
 
 }
 
+// ===========================
 /* -_-_-_-_-_-_-_-_-_-_-helper functions -_-_-_-_-_-_-_-_-_-_- */
 
 /* method for opening file in canvas directory. */
@@ -103,10 +106,9 @@ t_smsbuf* smspd_buffer(t_symbol *bufname)
 
 /*this function seems to not be copying everything... or else it would be usable
   before copying the buffer from file (it crashes if it is) */
-void CopySmsHeader( SMS_Header *pFileHeader, SMS_Header *pBufHeader, char *paramString  )
+void CopySmsHeader(SMS_Header *pFileHeader, SMS_Header *pBufHeader, char *paramString)
 {
         sms_initHeader (pBufHeader);
-
         pBufHeader->nFrames = pFileHeader->nFrames;
         pBufHeader->iFormat = pFileHeader->iFormat;
         pBufHeader->iFrameRate = pFileHeader->iFrameRate;
@@ -119,7 +121,6 @@ void CopySmsHeader( SMS_Header *pFileHeader, SMS_Header *pBufHeader, char *param
         pBufHeader->iMaxFreq = pFileHeader->iMaxFreq;
    
         pBufHeader->iFrameBSize = sms_frameSizeB(pBufHeader);
-
         pBufHeader->nTextCharacters = pFileHeader->nTextCharacters;
         strcpy(paramString, pFileHeader->pChTextCharacters);
         pBufHeader->pChTextCharacters = paramString;
@@ -321,8 +322,8 @@ static void smsbuf_print(t_smsbuf *x)
                 post("Envelope Coefficients: %d", x->smsHeader.nEnvCoeff);
                 post("Original Signal Sampling Rate = %d", x->smsHeader.iSamplingRate);  
 
-                if (x->smsHeader.nTextCharacters > 0)
-                        post("ANALISIS ARGUMENTS: %s", x->smsHeader.pChTextCharacters);
+                // if (x->smsHeader.nTextCharacters > 0)
+                //         post("ANALISIS ARGUMENTS: %s", x->smsHeader.pChTextCharacters);
         }
         else pd_error(x, "smsbuf (%s) not ready", x->bufname->s_name);
 }
@@ -387,7 +388,6 @@ static void smsbuf_verbose(t_smsbuf *x, t_float flag)
 static void *smsbuf_new(t_symbol *bufname)
 {
         t_smsbuf *x = (t_smsbuf *)pd_new(smsbuf_class);
-
         x->canvas = canvas_getcurrent();
         x->filename = NULL;
         x->nframes= 0;
@@ -401,13 +401,10 @@ static void *smsbuf_new(t_symbol *bufname)
         //todo: make a default name if none is given:
         //if (!*s->s_name) s = gensym("delwrite~");
         // ?? do in need to check if bufname already exists? ??
-        pd_bind(&x->x_obj.ob_pd, bufname);
         x->bufname = bufname;
-        //post("smsbuf using bufname: %s", bufname->s_name);
-
+        pd_bind(&x->x_obj.ob_pd, x->bufname);
         sms_init();
-    
-        return (x);
+        return(x);
 }
 
 static void smsbuf_free(t_smsbuf *x)
@@ -429,14 +426,12 @@ static void smsbuf_free(t_smsbuf *x)
                         sms_freeFrame(&x->smsData2[i]);
                 free(x->smsData2);
         }
-
         pd_unbind(&x->x_obj.ob_pd, x->bufname);
 }
 
 void smsbuf_setup(void)
-{
-        smsbuf_class = class_new(gensym("smsbuf"), (t_newmethod)smsbuf_new, 
-                                       (t_method)smsbuf_free, sizeof(t_smsbuf), 0, A_DEFSYM, 0);
+{       
+        smsbuf_class = class_new(gensym("smsbuf"), (t_newmethod)smsbuf_new, (t_method)smsbuf_free, sizeof(t_smsbuf), 0, A_DEFSYM, 0);
         class_addmethod(smsbuf_class, (t_method)smsbuf_open, gensym("open"), A_DEFSYM, 0);
         class_addmethod(smsbuf_class, (t_method)smsbuf_save, gensym("save"), A_DEFSYM, 0);
         class_addmethod(smsbuf_class, (t_method)smsbuf_info, gensym("info"),  0);
@@ -446,7 +441,5 @@ void smsbuf_setup(void)
         class_addmethod(smsbuf_class, (t_method)smsbuf_backup, gensym("backup"),  0);
         class_addmethod(smsbuf_class, (t_method)smsbuf_switch, gensym("switch"),  0);
         class_addmethod(smsbuf_class, (t_method)smsbuf_verbose, gensym("verbose"), A_DEFFLOAT, 0);
-/*         class_addmethod(smsbuf_class, (t_method)smsbuf_frames, gensym("frames"), 0); */
-/*         class_addmethod(smsbuf_class, (t_method)smsbuf_framerate, gensym("framerate"), 0); */
 }
 
