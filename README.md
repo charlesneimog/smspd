@@ -1,7 +1,8 @@
-~~~~~~~~~~~~~~~~ SMS for Pure Data (Pd) ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## SMS for Pure Data (Pd)
 version 0.95 -- August 11, 2009 
+* updated by Charles K. Neimog in 15-dec-2022
 
- ---------- OVERVIEW -----------------------------------------------------------------------
+### OVERVIEW
 smspd is an external library of externals for Miller Puckette's PureData ("pd"). 
 It uses the libsms library for Spectral Modeling and Synthesis Techniques to 
 accomplish SMS analysis, synthesis, and modifications in real-time. This code,
@@ -14,7 +15,7 @@ Currently there are the following externals: [smsbuf], [smsanal], [smssynth~],
 and [smsedit].  The documentation for these externals is in the form of pd help files.
 To see an overview of the set together, see sms-help.pd
 
------------- TO INSTALL ----------------------------------------------------------------------
+### TO INSTALL 
 To compile type in main directory: "scons". To install type: "sudo scons install",
 which will default to installing the files into /usr/local/lib/pd . If, instead you wanted 
 to install in a different directory, for example in the Pd Extended directory on Mac OS X,
