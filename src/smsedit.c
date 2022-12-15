@@ -22,7 +22,6 @@
 
 #include "smspd.h"
 
-
 /* ------------------------ smsedit ----------------------------- */
 static t_class *smsedit_class;
 
@@ -33,6 +32,12 @@ typedef struct _smsedit
         t_symbol *bufname;
         int verbose;
 } t_smsedit;
+
+// What is the name of the t_smsedit 
+// _smsedit is the name of the struct
+
+
+
 
 static void smsedit_buffer(t_smsedit *x, t_symbol *bufname)
 {
