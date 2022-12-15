@@ -21,7 +21,7 @@
  */
 
 #include "smspd.h"
-#include <string.h>
+
 
 #define REQUIRE_LIBSMS_VERSION 1.1
 
@@ -433,14 +433,12 @@ static void smsbuf_free(t_smsbuf *x)
                         sms_freeFrame(&x->smsData2[i]);
                 free(x->smsData2);
         }
-
         pd_unbind(&x->x_obj.ob_pd, x->bufname);
 }
 
 void smsbuf_setup(void)
-{
-        smsbuf_class = class_new(gensym("smsbuf"), (t_newmethod)smsbuf_new, 
-                                       (t_method)smsbuf_free, sizeof(t_smsbuf), 0, A_DEFSYM, 0);
+{       
+        smsbuf_class = class_new(gensym("smsbuf"), (t_newmethod)smsbuf_new, (t_method)smsbuf_free, sizeof(t_smsbuf), 0, A_DEFSYM, 0);
         class_addmethod(smsbuf_class, (t_method)smsbuf_open, gensym("open"), A_DEFSYM, 0);
         class_addmethod(smsbuf_class, (t_method)smsbuf_save, gensym("save"), A_DEFSYM, 0);
         class_addmethod(smsbuf_class, (t_method)smsbuf_info, gensym("info"),  0);
@@ -450,7 +448,5 @@ void smsbuf_setup(void)
         class_addmethod(smsbuf_class, (t_method)smsbuf_backup, gensym("backup"),  0);
         class_addmethod(smsbuf_class, (t_method)smsbuf_switch, gensym("switch"),  0);
         class_addmethod(smsbuf_class, (t_method)smsbuf_verbose, gensym("verbose"), A_DEFFLOAT, 0);
-/*         class_addmethod(smsbuf_class, (t_method)smsbuf_frames, gensym("frames"), 0); */
-/*         class_addmethod(smsbuf_class, (t_method)smsbuf_framerate, gensym("framerate"), 0); */
 }
 

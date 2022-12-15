@@ -19,11 +19,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  */
-#include "sms.h"
+
 #include "smspd.h"
 
-/* ------------------------ smsedit ----------------------------- */
 
+/* ------------------------ smsedit ----------------------------- */
 static t_class *smsedit_class;
 
 typedef struct _smsedit

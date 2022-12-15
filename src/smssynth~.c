@@ -23,9 +23,6 @@
 
 #include "smspd.h"
 
-//#include <unistd.h> /* sleep() */
-//#include <pthread.h>
-
 /* ------------------------ smssynth~ ----------------------------- */
 
 #define SOURCE_FLOAT 1

@@ -32,10 +32,9 @@ endif
 
 # =================================== Sources ===================================
 
-sms.class.sources = src/smspd.c src/smssynth~.c  
+sms.class.sources = src/smspd.c src/smsanal.c src/smssynth~.c src/smsedit.c 
 # With errors src/smsanal.c src/smsedit.c
-
-
+ 
 # =================================== Data ======================================
 
 datafiles = $(SMS_DYNLIB)

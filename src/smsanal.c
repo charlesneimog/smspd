@@ -19,10 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  */
-#include "m_pd.h"
-#include "sms.h"
+
 #include "smspd.h"
-#include <pthread.h>
 
 /* ------------------------ smsanal ----------------------------- */
 
@@ -73,8 +71,7 @@ static void smsanal_verbose(t_smsanal *x, t_float flag)
 static void smsanal_buffer(t_smsanal *x, t_symbol *bufname)
 {
         // get the pointer to the desired buffer (todo: still have to set the buffer symbol name)
-        x->smsbuf =
-        (t_smsbuf *)pd_findbyclass(bufname, smsbuf_class);
+        x->smsbuf = (t_smsbuf *)pd_findbyclass(bufname, smsbuf_class);
 
         if(!x->smsbuf)
         {

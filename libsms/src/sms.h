@@ -61,6 +61,16 @@
  *  the documentation will be updated to reflect which members of the header
  *  are useful in manipulations, and what functions to use for these manipulatinos
  */
+typedef struct {
+    int nSamples;       /*!< Number of samples in the sound */
+    int iSamplingRate;   /*!< The sampling rate */
+    int channelCount;  /*!< The number of channels */
+    int iReadChannel;  /*!< the channel to read from */
+    int sizeHeader;	     /*!< size of sound header in bytes */
+} SMS_SndHeader;
+
+
+
 typedef struct SMSHeader
 {
     int iSmsMagic;         /*!< identification constant */
@@ -613,7 +623,7 @@ void sms_analyzeFrame(int iCurrentFrame, SMS_AnalParams *pAnalParams, sfloat fRe
 
 int sms_init();  
 void sms_free();  
-int sms_initAnalysis(SMS_AnalParams *pAnalParams);
+int sms_initAnalysis(SMS_AnalParams *pAnalParams, SMS_SndHeader *pSoundHeader);
 void sms_initAnalParams(SMS_AnalParams *pAnalParams);
 void sms_initSynthParams(SMS_SynthParams *synthParams);
 int sms_initSynth(SMS_Header *pSmsHeader, SMS_SynthParams *pSynthParams );
@@ -675,7 +685,7 @@ void sms_sineSynthFrame(SMS_Data *pSmsFrame, sfloat *pBuffer,
 
 void sms_initHeader(SMS_Header *pSmsHeader);
 int sms_getHeader(char *pChFileName, SMS_Header **ppSmsHeader, FILE **ppInputFile);
-void sms_fillHeader(SMS_Header *pSmsHeader, SMS_AnalParams *pAnalParams);
+void sms_fillHeader (SMS_Header *pSmsHeader, SMS_AnalParams *pAnalParams, char *pProgramString);
 int sms_writeHeader(char *pFileName, SMS_Header *pSmsHeader, FILE **ppOutSmsFile);
 int sms_writeFile(FILE *pSmsFile, SMS_Header *pSmsHeader);
 int sms_initFrame(int iCurrentFrame, SMS_AnalParams *pAnalParams, int sizeWindow);
