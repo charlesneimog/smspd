@@ -14,6 +14,12 @@ Currently there are the following externals: [smsbuf], [smsanal], [smssynth~],
 and [smsedit].  The documentation for these externals is in the form of pd help files.
 To see an overview of the set together, see sms-help.pd
 
+### Compiling for Linux/Mac OS
+* Install libsndfile and gsl devel. 
+* Build libsms using cmake.
+* Then `make` for the object :).
+
+
 ### Compiling for Windows
 * Install msys2: `winget install msys2.msys2`
 * Open the Mingw64 terminal then run: `pacman -S mingw-w64-x86_64-libsndfile mingw-w64-x86_64-gsl mingw-w64-x86_64-cmake`. 
