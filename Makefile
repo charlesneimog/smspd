@@ -39,7 +39,7 @@ sms.class.sources =  src/smspd.c src/smsanal.c src/smssynth~.c src/smsedit.c
  
 # =================================== Data ======================================
 
-datafiles = $(SMS_DYNLIB)
+datafiles = $(SMS_DYNLIB) ./help/sms-help.pd ./help/basic.pd ./help/smsanal-help.pd ./help/smsedit-help.pd ./help/smssynth~-help.pd COPYING README.md
 
 # =================================== Pd Lib Builder =============================
 
