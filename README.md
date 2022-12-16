@@ -15,7 +15,7 @@ and [smsedit].  The documentation for these externals is in the form of pd help 
 To see an overview of the set together, see sms-help.pd
 
 ### Compiling for Linux/Mac OS
-* Install libsndfile and gsl devel. 
+* Install `libsndfile` and `gsl` devel. 
 * Build libsms using cmake.
 * Then `make` for the object :).
 
