@@ -31,7 +31,7 @@
 #define SOURCE_FLOAT 1
 #define SOURCE_SIGNAL 2
 
-static t_class *smssynth_class;
+t_class *smssynth_class;
 
 typedef struct _smssynth
 {

@@ -29,8 +29,10 @@ all: libsms
 
 # Add a new target to build libsms
 libsms:
-	cd ./libsms && mkdir build && cd build && cmake .. && make 
-	cp $(SMS_DYNLIB) .
+
+	cd ./libsms && mkdir -p build && cd build && cmake .. && cmake --build . --config Release 
+	
+#cp $(SMS_DYNLIB) .
 
 
 

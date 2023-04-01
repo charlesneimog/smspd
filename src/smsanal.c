@@ -29,7 +29,7 @@
 #define ANALYSIS_FROM_FILE 0
 #define ANALYSIS_FROM_ARRAY 1
 
-static t_class *smsanal_class;
+t_class *smsanal_class;
 
 typedef struct _smsanal
 {
@@ -71,10 +71,11 @@ static void smsanal_verbose(t_smsanal *x, t_float flag)
 }
 
 static void smsanal_buffer(t_smsanal *x, t_symbol *bufname)
-{
-        // get the pointer to the desired buffer (todo: still have to set the buffer symbol name)
-        x->smsbuf =
-        (t_smsbuf *)pd_findbyclass(bufname, smsbuf_class);
+{       
+        
+        
+        // get the pointer to the desired buffer (todo: still have to set the buffer symbol name)      
+        x->smsbuf = (t_smsbuf *)pd_findbyclass(bufname, smsbuf_class);
 
         if(!x->smsbuf)
         {

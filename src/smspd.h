@@ -24,7 +24,7 @@
 
 #include "m_pd.h"
 
-t_class *smsbuf_class;
+extern t_class *smsbuf_class;
 
 typedef struct _smsbuf
 {

@@ -24,7 +24,7 @@
 
 /* ------------------------ smsedit ----------------------------- */
 
-static t_class *smsedit_class;
+t_class *smsedit_class;
 
 typedef struct _smsedit
 {

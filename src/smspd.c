@@ -25,7 +25,8 @@
 
 #define REQUIRE_LIBSMS_VERSION 1.1
 
-static t_class *sms_class;
+t_class *sms_class;
+t_class *smsbuf_class;
 
 typedef struct sms 
 {
@@ -398,7 +399,6 @@ static void *smsbuf_new(t_symbol *bufname)
         x->outlet1 = outlet_new(&x->x_obj,  gensym("list"));
         x->outlet2 = outlet_new(&x->x_obj,  gensym("list"));
 
-        //todo: make a default name if none is given:
         //if (!*s->s_name) s = gensym("delwrite~");
         // ?? do in need to check if bufname already exists? ??
         pd_bind(&x->x_obj.ob_pd, bufname);
