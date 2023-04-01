@@ -1,28 +1,21 @@
-# library name
 lib.name = sms
-
-# python libs 
 
 uname := $(shell uname -s)
 
 ifeq (MINGW,$(findstring MINGW,$(uname)))
-  cflags = -I ./libsms/src -fPIC
-  ldlibs = -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
-  SMS_DYNLIB = ./libsms/build/libsms.dll
-  
+	cflags = -I ./libsms/src -fPIC
+	ldlibs = -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
+	SMS_DYNLIB = ./libsms/build/libsms.dll
 
 else ifeq (Linux,$(findstring Linux,$(uname)))
-  # allow multiple definition for all 
-
-  cflags = -I ./libsms/src -fPIC
-  ldlibs = -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
-  SMS_DYNLIB = ./libsms/build/libsms.so 
+  	cflags = -I ./libsms/src -fPIC
+  	ldlibs = -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
+  	SMS_DYNLIB = ./libsms/build/libsms.so 
   
-
 else ifeq (Darwin,$(findstring Darwin,$(uname)))
-  cflags = -I ./libsms/src -fPIC
-  ldlibs = -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
-  SMS_DYNLIB = ./libsms/build/libsms.dylib
+  	cflags = -I ./libsms/src -fPIC
+  	ldlibs = -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
+  	SMS_DYNLIB = ./libsms/build/libsms.dylib
 
 else
   $(error "Unknown system type: $(uname)")
@@ -30,7 +23,18 @@ else
 
 endif
 
-# Define SMS lib
+# Add the new target to the default target
+.PHONY: all libsms
+all: libsms
+
+# Add a new target to build libsms
+libsms:
+	cd ./libsms && mkdir build && cd build && cmake .. && make 
+	cp $(SMS_DYNLIB) .
+
+
+
+
 
 # =================================== Sources ===================================
 

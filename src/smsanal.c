@@ -132,8 +132,7 @@ void *smsanal_childthread(void *zz)
 		/* if there is an output SMS frame, write it */
 		if (x->iStatus == 1)
 		{
-                        // outlet_float(x->outlet_iFrame, (float)++x->iFrame);
-                        
+                        outlet_float(x->outlet_iFrame, (float)++x->iFrame);
                         if(0 && (x->iFrame % 10) == 0)
                                 post(" %0.2f s", (float)x->iFrame / x->smsbuf->smsHeader.iFrameRate);
 		}
@@ -233,7 +232,7 @@ static void smsanal_soundfile(t_smsanal *x, t_symbol *filename)
        x->iDoAnalysis = 1;
 
        /* send off analysis is it's own thread so it doesn't interrupt pd's audio loop */
-       pthread_create(&childthread, NULL, smsanal_childthread, (void *)x);
+       pthread_create(&childthread, 0, smsanal_childthread, (void *)x);
 
        return;
 }
