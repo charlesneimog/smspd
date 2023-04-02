@@ -15,7 +15,6 @@ add_library(sms SHARED ${SRC_FILES})
 link_directories(/usr/lib /opt/local/lib /usr/local/lib)
 include_directories(/usr/include /opt/local/include /usr/local/include src)
 
-
 # add dynamic library dependencies:  libsndfile libgsl
 target_link_libraries(sms sndfile gsl gslcblas)
 

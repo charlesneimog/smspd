@@ -41,6 +41,7 @@ jobs:
           sudo apt-get install libsndfile1-dev
           sudo apt-get install libgsl0-dev
           sudo apt-get install patchelf
+          apt-get install deken
 
       - name: Build
         run: make 
@@ -68,11 +69,11 @@ jobs:
           cp resources/* pdsms/resources -r
           cp src/* pdsms/src -r
           cp help/* pdsms
-          ./deken upgrade --self
-          ./deken package pdsms -v ${{ github.event.inputs.py4pdVersion }} -n pdsms 
+          deken upgrade --self
+          deken package pdsms -v ${{ github.event.inputs.py4pdVersion }} -n pdsms 
           echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
           echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-          ./deken upload *.dek
+          deken upload *.dek
         continue-on-error: true
 
       - name: Upload Deken
@@ -83,7 +84,7 @@ jobs:
           source ~/.deken/virtualenv/bin/activate
           echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
           echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-          ./deken upload *.dek
+          deken upload *.dek
 
 
   windows-build:
