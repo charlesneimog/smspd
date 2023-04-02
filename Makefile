@@ -14,7 +14,7 @@ else ifeq (Linux,$(findstring Linux,$(uname)))
   
 else ifeq (Darwin,$(findstring Darwin,$(uname)))
   	cflags = -I ./libsms/src -fPIC
-  	ldlibs = -lsndfile -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
+  	ldlibs = -L /usr/local/lib -lsndfile -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
   	SMS_DYNLIB = ./libsms/build/libsms.dylib
 
 else
