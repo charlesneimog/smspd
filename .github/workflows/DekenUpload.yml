@@ -118,18 +118,15 @@ jobs:
       name: Build pdsms
       shell: msys2 {0}
       run: |
-        make 
-    
-    - name: Create Object Folder
-      run: |
+        make
         mv sms.dll sms.m_amd64
         mkdir pdsms\\src\\
+        cp help/* pdsms -r
+        cp src/* pdsms/src -r
         cp sms.m_amd64 pdsms\
         cp libsms.dll pdsms\
         ./resources/localdeps/localdeps.win.sh pdsms/sms.pd_linux
         ./resources/localdeps/localdeps.win.sh pdsms/libsms.dll
-        xcopy src\*.h pdsms\src\
-        xcopy src\*.c pdsms\src\
       
     - if: runner.os == 'Windows'
       name: Build pdsms
