@@ -115,7 +115,7 @@ jobs:
         choco install puredata --yes
 
     - if: runner.os == 'Windows'
-      name: Build pdsms
+      name: Build pdsms and Mk
       shell: msys2 {0}
       run: |
         make
@@ -125,7 +125,7 @@ jobs:
         cp src/* pdsms/src -r
         cp sms.m_amd64 pdsms\
         cp libsms.dll pdsms\
-        ./resources/localdeps/localdeps.win.sh pdsms/sms.pd_linux
+        ./resources/localdeps/localdeps.win.sh pdsms/sms.m_amd64
         ./resources/localdeps/localdeps.win.sh pdsms/libsms.dll
       
     - if: runner.os == 'Windows'
