@@ -146,7 +146,7 @@ jobs:
     
   macos-intel-build:
     runs-on: macos-latest
-    if: ${{ github.event.inputs.MacOS == 'true' }}
+    #if: ${{ github.event.inputs.MacOS == 'true' }}
     timeout-minutes: 10
     steps:
     - uses: actions/checkout@v3
