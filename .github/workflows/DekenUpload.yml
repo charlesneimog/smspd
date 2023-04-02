@@ -146,7 +146,7 @@ jobs:
     
   macos-intel-build:
     runs-on: macos-latest
-    #if: ${{ github.event.inputs.MacOS == 'true' }}
+    if: ${{ github.event.inputs.Mac == 'true' }}
     timeout-minutes: 10
     steps:
     - uses: actions/checkout@v3
@@ -158,6 +158,9 @@ jobs:
       run: |
         brew install --cask pd
         mkdir pdsms
+        brew install gsl
+        brew install libsamplerate
+        
 
     - name: Build
       run: make
