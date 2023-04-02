@@ -23,6 +23,9 @@ on:
         default: true
 
 jobs:  
+# =====================================================
+# ====================== Linux ========================
+# =====================================================
   linux-build:
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.Linux == 'true' }}
@@ -87,6 +90,9 @@ jobs:
           echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
           ./deken upload *.dek
 
+# =====================================================
+# ====================== Windows ======================
+# =====================================================
 
   windows-build:
     runs-on: windows-latest
@@ -144,6 +150,10 @@ jobs:
         echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
         ./deken package pdsms -v ${{ github.event.inputs.ObjVersion }} -n pdsms
         ./deken upload *.dek
+
+# =====================================================
+# ======================== Mac ========================
+# =====================================================
 
   macos-intel-build:
     runs-on: macos-latest
