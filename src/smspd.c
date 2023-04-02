@@ -52,7 +52,7 @@ void sms_setup(void)
         smsedit_setup();
 
         if(SMS_VERSION < REQUIRE_LIBSMS_VERSION)
-                error("libsms is too old (version %1.1f, things might not work", SMS_VERSION);
+                pd_error(NULL, "libsms is too old (version %1.1f, things might not work", SMS_VERSION);
         else
                 post("smspd using libsms version %1.1f", SMS_VERSION);
 
