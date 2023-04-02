@@ -15,7 +15,7 @@ else ifeq (Linux,$(findstring Linux,$(uname)))
 # mac is C11 compliant, but not C99
 else ifeq (Darwin,$(findstring Darwin,$(uname)))
   	cflags = -I/usr/local/include -I ./libsms/src -fPIC -std=c11 -mmacosx-version-min=10.9
-  	ldlibs = -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
+  	ldlibs = -L ./libsms/build/ -l sms -undefined dynamic_lookup
   	SMS_DYNLIB = ./libsms/build/libsms.dylib
 
 else
