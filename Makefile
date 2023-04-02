@@ -13,8 +13,8 @@ else ifeq (Linux,$(findstring Linux,$(uname)))
   	SMS_DYNLIB = ./libsms/build/libsms.so 
   
 else ifeq (Darwin,$(findstring Darwin,$(uname)))
-  	cflags = -I ./libsms/src -fPIC
-  	ldlibs = -L /usr/local/lib -lsndfile -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
+  	cflags = -I/usr/local/include -I ./libsms/src -fPIC
+  	ldlibs = -lsndfile -L ./libsms/build/ -l sms -Wl,--allow-multiple-definition
   	SMS_DYNLIB = ./libsms/build/libsms.dylib
 
 else
