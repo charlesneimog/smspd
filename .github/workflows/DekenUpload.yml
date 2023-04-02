@@ -54,12 +54,12 @@ jobs:
       
       - name: Copy files 
         run: |
-          mkdir pdsms
-          cp sms.pd_linux pdsms
-          cp libsms.so pdsms
-          mkdir pdsms/src
-          cp src/* pdsms/src -r
-          ./resources/localdeps/localdeps.linux.sh pdsms/sms.pd_linux
+          mkdir smspd
+          cp sms.pd_linux smspd
+          cp libsms.so smspd
+          mkdir smspd/src
+          cp src/* smspd/src -r
+          ./resources/localdeps/localdeps.linux.sh smspd/sms.pd_linux
                 
       - name: Configure Deken
         env:
@@ -69,12 +69,12 @@ jobs:
           curl https://raw.githubusercontent.com/pure-data/deken/main/developer/deken > deken
           chmod 755 ./deken
           mkdir ~/.deken
-          cp help/* pdsms -r
+          cp help/* smspd -r
           python3 -m venv ~/.deken/virtualenv/
           source ~/.deken/virtualenv/bin/activate
           python3 -m pip install hy==0.19
           ./deken upgrade --self
-          ./deken package pdsms -v ${{ github.event.inputs.ObjVersion }} -n pdsms 
+          ./deken package smspd -v ${{ github.event.inputs.ObjVersion }} -n smspd 
           echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
           echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
           ./deken upload *.dek
@@ -120,23 +120,23 @@ jobs:
         choco install puredata --yes
 
     - if: runner.os == 'Windows'
-      name: Build pdsms and Mk
+      name: Build smspd and Mk
       shell: msys2 {0}
       run: |
         make
         mv sms.dll sms.m_amd64
-        mkdir pdsms\\
-        mkdir pdsms\\src\\
-        cp help/*.pd pdsms\\
-        cp src/* pdsms/src -r
-        rm pdsms/src/*.o
-        cp sms.m_amd64 pdsms\\
-        cp libsms.dll pdsms\\
-        ./resources/localdeps/localdeps.win.sh pdsms/sms.m_amd64
-        ./resources/localdeps/localdeps.win.sh pdsms/libsms.dll
+        mkdir smspd\\
+        mkdir smspd\\src\\
+        cp help/*.pd smspd\\
+        cp src/* smspd/src -r
+        rm smspd/src/*.o
+        cp sms.m_amd64 smspd\\
+        cp libsms.dll smspd\\
+        ./resources/localdeps/localdeps.win.sh smspd/sms.m_amd64
+        ./resources/localdeps/localdeps.win.sh smspd/libsms.dll
       
     - if: runner.os == 'Windows'
-      name: Build pdsms
+      name: Build smspd
       env:
         DEKEN_PASSWORD: ${{ secrets.DEKEN_PASSWORD }}
         DEKEN_USERNAME: ${{ secrets.DEKEN_USERNAME }}
@@ -149,7 +149,7 @@ jobs:
         unzip deken_Windows64.zip
         echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
         echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-        ./deken package pdsms -v ${{ github.event.inputs.ObjVersion }} -n pdsms
+        ./deken package smspd -v ${{ github.event.inputs.ObjVersion }} -n smspd
         ./deken upload *.dek
 
 # =====================================================
@@ -169,7 +169,7 @@ jobs:
     - name: set Enviroment
       run: |
         brew install --cask pd
-        mkdir pdsms
+        mkdir smspd
         brew install gsl
         brew install libsndfile
 
@@ -179,30 +179,20 @@ jobs:
     - name: Do ld
       run: ls -l
 
-    - name: Copy files to pdsms
+    - name: Copy files to smspd
       run: |
-        cp sms.pd_darwin pdsms
-        cp libsms.dylib pdsms
-        mkdir pdsms/resources
-        mkdir pdsms/src
-        cp -r src/*.c pdsms/src
-        cp -r src/*.h pdsms/src
+        cp sms.pd_darwin smspd
+        cp libsms.dylib smspd
+        mkdir smspd/resources
+        mkdir smspd/src
+        cp -r src/*.c smspd/src
+        cp -r src/*.h smspd/src
+        cp -r help/*.pd smspd
 
     - name: Copy dependencies
       run: |
-        ./resources/localdeps/localdeps.macos.sh pdsms/sms.d_amd64
-        ./resources/localdeps/localdeps.macos.sh pdsms/libsms.dylib
-
-    - name: Test
-      run: |
-        ls -l ./libsms/build/
-
-
-    - name: What is inside ./
-      run: ls -l pdsms
-
-    - name: What is inside pdsms
-      run: ls -l
+        ./resources/localdeps/localdeps.macos.sh smspd/sms.d_amd64
+        ./resources/localdeps/localdeps.macos.sh smspd/libsms.dylib
 
     - name: Upload Deken
       env:
@@ -214,5 +204,5 @@ jobs:
         mkdir ~/.deken
         echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
         echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-        ./deken package pdsms -v ${{ github.event.inputs.ObjVersion }} -n pdsms
+        ./deken package smspd -v ${{ github.event.inputs.ObjVersion }} -n smspd
         ./deken upload *.dek
