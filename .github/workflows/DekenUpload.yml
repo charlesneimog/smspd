@@ -205,7 +205,7 @@ jobs:
 
     - name: Run PureData Patch
       run: |
-        cp resources/test.pd ./test.pd
+        cp resources/test.pd ./
         '/Applications/Pd-*.app/Contents/Resources/bin/pd -stderr -nogui test.pd'
 
     - name: Upload Deken
