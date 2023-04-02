@@ -144,46 +144,42 @@ jobs:
         ./deken upload *.dek
 
     
-  # macos-intel-build:
-  #   runs-on: macos-latest
-  #   if: ${{ github.event.inputs.MacOS == 'true' }}
-  #   timeout-minutes: 10
+  macos-intel-build:
+    runs-on: macos-latest
+    if: ${{ github.event.inputs.MacOS == 'true' }}
+    timeout-minutes: 10
 
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #     with:
-  #       submodules: recursive
-  #       fetch-depth: 0
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        fetch-depth: 0
 
-  #   - name: set Enviroment
-  #     run: |
-  #       brew install --cask pd
-  #       python3.10 -c 'import sysconfig;print(sysconfig.get_config_var("LINKFORSHARED"))'
-  #       python3.10 -m pip install numpy
-  #       mkdir py4pd_macOS-Intel
+    - name: set Enviroment
+      run: |
+        brew install --cask pd
+        mkdir pdsms
 
-  #   - name: Build
-  #     run: make PYTHON_VERSION=python3.10 
+    - name: Build
+      run: make
 
-  #   - name: Copy files to py4pd_macOS-Intel
-  #     run: |
-  #       cp py4pd.pd_darwin resources/py4pd.cfg resources/py.py resources/py4pd-help.pd py4pd_macOS-Intel
-  #       mkdir py4pd_macOS-Intel/resources
-  #       mkdir py4pd_macOS-Intel/src
-  #       cp -r resources/* py4pd_macOS-Intel/resources
-  #       cp -r src/* py4pd_macOS-Intel/src
-  #       zip -r py4pd_macOS-Intel.zip py4pd_macOS-Intel
+    - name: Copy files to pdsms
+      run: |
+        cp sms.pd_darwin pdsms
+        mkdir pdsms/resources
+        mkdir pdsms/src
+        cp -r src/* pdsms/src
+        zip -r pdsms.zip pdsms
 
-  #   - name: Upload Deken
-  #     env:
-  #       DEKEN_PASSWORD: ${{ secrets.DEKEN_PASSWORD }}
-  #       DEKEN_USERNAME: ${{ secrets.DEKEN_USERNAME }}
-  #     run: |
-  #       wget https://github.com/pure-data/deken/releases/download/v0.9.2/deken_macOS.zip -O deken_macOS.zip
-  #       unzip deken_macOS.zip
-  #       mkdir ~/.deken
-  #       echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
-  #       echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-  #       mv py4pd_macOS-Intel py4pd
-  #       ./deken package py4pd -v ${{ github.event.inputs.py4pdVersion }} -n py4pd
-  #       ./deken upload *.dek
+    - name: Upload Deken
+      env:
+        DEKEN_PASSWORD: ${{ secrets.DEKEN_PASSWORD }}
+        DEKEN_USERNAME: ${{ secrets.DEKEN_USERNAME }}
+      run: |
+        wget https://github.com/pure-data/deken/releases/download/v0.9.2/deken_macOS.zip -O deken_macOS.zip
+        unzip deken_macOS.zip
+        mkdir ~/.deken
+        echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
+        echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
+        ./deken package pdsms -v ${{ github.event.inputs.py4pdVersion }} -n pdsms
+        ./deken upload *.dek
