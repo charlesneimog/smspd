@@ -24,7 +24,7 @@ on:
 
 jobs:  
   linux-build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: ${{ github.event.inputs.Linux == 'true' }}
     timeout-minutes: 7
     steps:
@@ -41,8 +41,9 @@ jobs:
         run: |
           sudo apt-get install puredata -y
           sudo apt install software-properties-common -y
-          sudo add-apt-repository ppa:deadsnakes/ppa -y
           sudo apt-get update
+          sudo apt-get install libsndfile1
+          sudo apt-get install libsndfile1
 
       - name: Build
         run: make 
