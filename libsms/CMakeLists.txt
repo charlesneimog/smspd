@@ -15,6 +15,12 @@ include_directories(src)
 # Add the library to the project
 add_library(sms SHARED ${SRC_FILES})
 
+# if macOS, add sndfile library
+if (APPLE)
+    find_library(SNDFILE_LIB sndfile)
+    target_link_libraries(sms ${SNDFILE_LIB})
+endif()
+
 # add dynamic library dependencies:  libsndfile libgsl
 target_link_libraries(sms sndfile gsl gslcblas)
 
