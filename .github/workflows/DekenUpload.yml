@@ -55,7 +55,7 @@ jobs:
           cp src/* pdsms/src -r
           ./resources/localdeps/localdeps.linux.sh pdsms/sms.pd_linux
           ls
-          zip -r sms.zip sms
+          zip -r pdsms.zip pdsms
                 
       - name: Configure Deken
         env:
