@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "*.omlib": "lisp",
-        "*.pdlibbuilder": "makefile",
-        "inttypes.h": "c"
-    }
-}
