@@ -169,6 +169,7 @@ jobs:
     - name: set Enviroment
       run: |
         brew install --cask pd
+        mkdir pdsms
         brew install gsl
         brew install libsndfile
 
@@ -181,7 +182,6 @@ jobs:
     - name: Copy files to pdsms
       run: |
         cp sms.pd_darwin pdsms
-        mkdir pdsms
         mkdir pdsms/resources
         mkdir pdsms/src
         cp -r src/*.c pdsms/src
@@ -191,7 +191,7 @@ jobs:
 
     - name: What is inside pdsms
       run: ls -l pdsms
-      
+
     - name: Upload Deken
       env:
         DEKEN_PASSWORD: ${{ secrets.DEKEN_PASSWORD }}
