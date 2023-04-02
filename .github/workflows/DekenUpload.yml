@@ -42,8 +42,8 @@ jobs:
           sudo apt-get install puredata -y
           sudo apt install software-properties-common -y
           sudo apt-get update
-          sudo apt-get install libsndfile1
-          sudo apt-get install libsndfile1
+          sudo apt-get install libsndfile1-dev
+          sudo apt-get install libgsl0-dev
 
       - name: Build
         run: make 
