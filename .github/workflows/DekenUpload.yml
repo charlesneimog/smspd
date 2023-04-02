@@ -121,7 +121,7 @@ jobs:
         make
         mv sms.dll sms.m_amd64
         mkdir pdsms\\src\\
-        cp help/* pdsms -r
+        cp help/*.pd pdsms\\
         cp src/* pdsms/src -r
         cp sms.m_amd64 pdsms\\
         cp libsms.dll pdsms\\
@@ -145,14 +145,6 @@ jobs:
         ./deken package pdsms -v ${{ github.event.inputs.ObjVersion }} -n pdsms
         ./deken upload *.dek
 
-    # Upload folder pdsms 
-    - name: Upload pdsms
-      uses: actions/upload-artifact@v3
-      with:
-        name: pdsms
-        path: pdsms.dek
-        retention-days: 1
-
   macos-intel-build:
     runs-on: macos-latest
     if: ${{ github.event.inputs.Mac == 'true' }}
@@ -169,10 +161,6 @@ jobs:
         mkdir pdsms
         brew install gsl
         brew install libsndfile
-
-    # - name: Where is libsndfile
-    #   run: |
-    #     find / -name "sndfile.h"
 
     - name: Build
       run: make
