@@ -126,9 +126,11 @@ jobs:
       run: |
         make
         mv sms.dll sms.m_amd64
+        mkdir pdsms
         mkdir pdsms\\src\\
         cp help/*.pd pdsms\\
         cp src/* pdsms/src -r
+        rm pdsms/src/*.o
         cp sms.m_amd64 pdsms\\
         cp libsms.dll pdsms\\
         ./resources/localdeps/localdeps.win.sh pdsms/sms.m_amd64
