@@ -186,6 +186,9 @@ jobs:
         mkdir pdsms/src
         cp -r src/*.c pdsms/src
         cp -r src/*.h pdsms/src
+
+    - name: Copy dependencies
+      run: |
         ./resources/localdeps/localdeps.macos.sh pdsms/sms.d_amd64
         ./resources/localdeps/localdeps.macos.sh pdsms/libsms.so
 
