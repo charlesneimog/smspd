@@ -209,15 +209,15 @@ jobs:
         cp resources/test.pd ./
         /Applications/Pd-*.app/Contents/Resources/bin/pd -stderr -nogui test.pd
 
-    # - name: Upload Deken
-    #   env:
-    #     DEKEN_PASSWORD: ${{ secrets.DEKEN_PASSWORD }}
-    #     DEKEN_USERNAME: ${{ secrets.DEKEN_USERNAME }}
-    #   run: |
-    #     wget https://github.com/pure-data/deken/releases/download/v0.9.2/deken_macOS.zip -O deken_macOS.zip
-    #     unzip deken_macOS.zip
-    #     mkdir ~/.deken
-    #     echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
-    #     echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-    #     ./deken package smspd -v ${{ github.event.inputs.ObjVersion }} -n smspd
-    #     ./deken upload *.dek
+    - name: Upload Deken
+      env:
+        DEKEN_PASSWORD: ${{ secrets.DEKEN_PASSWORD }}
+        DEKEN_USERNAME: ${{ secrets.DEKEN_USERNAME }}
+      run: |
+        wget https://github.com/pure-data/deken/releases/download/v0.9.2/deken_macOS.zip -O deken_macOS.zip
+        unzip deken_macOS.zip
+        mkdir ~/.deken
+        echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
+        echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
+        ./deken package smspd -v ${{ github.event.inputs.ObjVersion }} -n smspd
+        ./deken upload *.dek
