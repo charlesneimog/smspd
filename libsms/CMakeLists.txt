@@ -16,13 +16,6 @@ link_directories(/usr/lib /opt/local/lib /usr/local/lib)
 include_directories(/usr/include /opt/local/include /usr/local/include src)
 
 
-
-# if macOS, add sndfile library
-if (APPLE)
-    find_library(SNDFILE_LIB sndfile)
-    target_link_libraries(sms ${SNDFILE_LIB})
-endif()
-
 # add dynamic library dependencies:  libsndfile libgsl
 target_link_libraries(sms sndfile gsl gslcblas)
 
