@@ -161,9 +161,9 @@ jobs:
         brew install gsl
         brew install libsndfile
 
-    - name: Where is libsndfile
-      run: |
-        find / -name "sndfile.h"
+    # - name: Where is libsndfile
+    #   run: |
+    #     find / -name "sndfile.h"
 
     - name: Build
       run: make
