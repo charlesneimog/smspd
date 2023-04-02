@@ -145,6 +145,14 @@ jobs:
         ./deken package pdsms -v ${{ github.event.inputs.ObjVersion }} -n pdsms
         ./deken upload *.dek
 
+    # Upload folder pdsms 
+    - name: Upload pdsms
+      uses: actions/upload-artifact@v3
+      with:
+        name: pdsms
+        path: pdsms
+        retention-days: 1
+
   macos-intel-build:
     runs-on: macos-latest
     if: ${{ github.event.inputs.Mac == 'true' }}
