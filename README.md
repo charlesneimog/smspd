@@ -1,5 +1,5 @@
 ## SMS for Pure Data (Pd)
-_version 0.95 -- August 11, 2009_ |||    _updated by Charles K. Neimog in 02-apr-2023_
+_version 0.95 - August 11, 2009_ |||    _updated by Charles K. Neimog in 02-apr-2023_
 
 ## Download
 
