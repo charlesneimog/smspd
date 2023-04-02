@@ -17,7 +17,7 @@ link_directories(/usr/lib /opt/local/lib /usr/local/lib /usr/local/opt/libsndfil
 include_directories(/usr/include /opt/local/include /usr/local/include src)
 
 # add dynamic library dependencies:  libsndfile libgsl
-target_link_libraries(sms sndfile gsl gslcblas)
+target_link_libraries(sms /usr/local/opt/libsndfile/lib/libsndfile.dylib gsl gslcblas)
 
 # if MinGW, build a dll not a .so
 
