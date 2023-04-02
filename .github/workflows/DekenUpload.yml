@@ -182,6 +182,7 @@ jobs:
     - name: Copy files to pdsms
       run: |
         cp sms.pd_darwin pdsms
+        cp libsms.dylib pdsms
         mkdir pdsms/resources
         mkdir pdsms/src
         cp -r src/*.c pdsms/src

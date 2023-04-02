@@ -17,6 +17,7 @@ else ifeq (Darwin,$(findstring Darwin,$(uname)))
   	cflags = -I/usr/local/include -I ./libsms/src -fPIC -std=c11 -mmacosx-version-min=10.9
   	ldlibs = -L ./libsms/build/ -l sms -undefined dynamic_lookup
   	SMS_DYNLIB = ./libsms/build/libsms.dylib
+	
 
 else
   $(error "Unknown system type: $(uname)")
