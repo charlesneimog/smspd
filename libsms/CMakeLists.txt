@@ -9,11 +9,13 @@ file(GLOB_RECURSE SRC_FILES src/*.c)
 set(sms_include src/sms.h)
 list(APPEND include_files ${sms_include})
 
-# Add the include directories to the project
-include_directories(src)
-
 # Add the library to the project
 add_library(sms SHARED ${SRC_FILES})
+
+link_directories(/usr/lib /opt/local/lib /usr/local/lib)
+include_directories(/usr/include /opt/local/include /usr/local/include src)
+
+
 
 # if macOS, add sndfile library
 if (APPLE)
