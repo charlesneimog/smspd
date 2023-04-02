@@ -55,8 +55,9 @@ jobs:
           cp sms.pd_linux pdsms
           cp libsms.so pdsms
           mkdir pdsms/src
-          cp src/* pdsms/resources -r
+          cp src/* pdsms/src -r
           ./resources/localdeps/localdeps.linux.sh py4pd_Linux/py4pd.pd_linux
+          ls
           zip -r sms.zip sms
                 
       - name: Configure Deken
