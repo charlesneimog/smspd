@@ -12,13 +12,10 @@ list(APPEND include_files ${sms_include})
 # Add the library to the project
 add_library(sms SHARED ${SRC_FILES})
 
-link_directories(/usr/lib /opt/local/lib /usr/local/lib /usr/local/opt/libsndfile/lib)
 
-include_directories(/usr/include /opt/local/include /usr/local/include src)
-
-# add dynamic library dependencies:  libsndfile libgsl
-target_link_libraries(sms /usr/local/opt/libsndfile/lib/libsndfile.dylib gsl gslcblas)
-
-# if MinGW, build a dll not a .so
-
-
+if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    link_directories(/usr/lib /opt/local/lib /usr/local/lib /usr/local/opt/gsl/lib /usr/local/opt/libsndfile/lib)
+    include_directories(/usr/include /opt/local/include /usr/local/include src)
+    target_link_libraries(sms /usr/local/opt/libsndfile/lib/libsndfile.dylib /usr/local/opt/gsl/lib/libgsl.dylib /usr/local/opt/gsl/lib/libgslcblas.dylib)
+else()
+    target_link_libraries(sms sndfile gsl gslcblas)
