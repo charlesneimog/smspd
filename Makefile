@@ -31,8 +31,7 @@ all: libsms
 libsms:
 
 	cd ./libsms && mkdir -p build && cd build && cmake .. && cmake --build . --config Release 
-	
-#cp $(SMS_DYNLIB) .
+	cp $(SMS_DYNLIB) .
 
 
 
