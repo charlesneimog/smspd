@@ -194,6 +194,15 @@ jobs:
         ./resources/localdeps/localdeps.macos.sh smspd/sms.d_amd64
         ./resources/localdeps/localdeps.macos.sh smspd/libsms.dylib
 
+    - name: Change sms to look for libsms.dylib in @loader_path/
+      run: |
+        install_name_tool -change libsms.dylib @loader_path/libsms.dylib smspd/sms.pd_darwin
+    
+    - name: Check dependencies
+      run: |
+        otool -L smspd/sms.pd_darwin
+        otool -L smspd/libsms.dylib
+
     - name: Upload Deken
       env:
         DEKEN_PASSWORD: ${{ secrets.DEKEN_PASSWORD }}
