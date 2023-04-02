@@ -32,7 +32,11 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
       - name: Install Build Dependencies
         run: |
           sudo apt-get install puredata -y
@@ -69,11 +73,11 @@ jobs:
           cp resources/* pdsms/resources -r
           cp src/* pdsms/src -r
           cp help/* pdsms
-          deken upgrade --self
-          deken package pdsms -v ${{ github.event.inputs.py4pdVersion }} -n pdsms 
+          ./deken upgrade --self
+          ./deken package pdsms -v ${{ github.event.inputs.py4pdVersion }} -n pdsms 
           echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
           echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-          deken upload *.dek
+          ./deken upload *.dek
         continue-on-error: true
 
       - name: Upload Deken
@@ -84,7 +88,7 @@ jobs:
           source ~/.deken/virtualenv/bin/activate
           echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
           echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-          deken upload *.dek
+          ./deken upload *.dek
 
 
   windows-build:
