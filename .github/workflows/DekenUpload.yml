@@ -159,8 +159,8 @@ jobs:
         brew install --cask pd
         mkdir pdsms
         brew install gsl
-        brew install libsamplerate
-        
+        brew install libsndfile
+
 
     - name: Build
       run: make
