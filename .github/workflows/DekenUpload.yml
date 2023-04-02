@@ -192,6 +192,11 @@ jobs:
         ./resources/localdeps/localdeps.macos.sh pdsms/sms.d_amd64
         ./resources/localdeps/localdeps.macos.sh pdsms/libsms.dylib
 
+    - name: Test
+      run: |
+        ls -l ./libsms/build/
+
+
     - name: What is inside ./
       run: ls -l pdsms
 
