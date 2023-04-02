@@ -72,6 +72,9 @@ jobs:
           cp resources/* pdsms/resources -r
           cp src/* pdsms/src -r
           cp help/* pdsms
+          python3 -m venv ~/.deken/virtualenv/
+          source ~/.deken/virtualenv/bin/activate
+          python3 -m pip install hy==0.19
           ./deken upgrade --self
           ./deken package pdsms -v ${{ github.event.inputs.py4pdVersion }} -n pdsms 
           echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
