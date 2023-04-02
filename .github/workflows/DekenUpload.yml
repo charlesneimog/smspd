@@ -150,7 +150,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: pdsms
-        path: pdsms
+        path: pdsms.dek
         retention-days: 1
 
   macos-intel-build:
