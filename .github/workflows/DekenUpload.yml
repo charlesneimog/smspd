@@ -203,6 +203,11 @@ jobs:
         otool -L smspd/sms.pd_darwin
         otool -L smspd/libsms.dylib
 
+    - name: Run PureData Patch
+      run: |
+        cp resources/test.pd ./test.pd
+        '/Applications/Pd-*.app/Contents/Resources/bin/pd -stderr -nogui test.pd'
+
     - name: Upload Deken
       env:
         DEKEN_PASSWORD: ${{ secrets.DEKEN_PASSWORD }}
