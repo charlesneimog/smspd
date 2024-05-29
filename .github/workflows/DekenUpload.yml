@@ -10,7 +10,7 @@ on:
     paths:
       - '**/*.cpp'
 env:
-  LIBNAME: partialtrack
+  LIBNAME: sms
 jobs:
   macos-universal-build:
     runs-on: macos-latest
@@ -29,7 +29,7 @@ jobs:
       - name: Build Object for Arm
         if: ${{ matrix.arch == 'arm64' }}
         run: |
-          cd Libraries/agsl/ampl/thirdparty/asl
+          cd Libraries/gsl/ampl/thirdparty/asl
           git checkout 2f5d9de
           cd ../../../../..
           cmake . -B build -DCMAKE_OSX_ARCHITECTURES=arm64 -DPD_FLOATSIZE=${{ matrix.precision }} -DPD_INSTALL_LIBS=True -DPDLIBDIR=./
@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [amd64, aarch64, arm]
+        arch: [amd64]
         precision: [32, 64]
     steps:
       - uses: actions/checkout@v4
@@ -100,7 +100,7 @@ jobs:
         run: |
           sudo apt update
           sudo add-apt-repository ppa:pure-data/pure-data -y
-          sudo apt install puredata -y
+          sudo apt install puredata libsndfile-dev -y
       - name: Install aarch64 gcc
         if: matrix.arch == 'aarch64'
         run: |
