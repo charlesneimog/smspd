@@ -1,223 +1,150 @@
-name: Deken Upload 
+name: C/C++ CI
 on:
   workflow_dispatch:
-    inputs:
-      ObjVersion:
-        description: 'Add the version for upload'
-        type: string
-        required: true
-      Windows:
-        description: 'Build and Upload Windows?'
-        type: boolean
-        required: true
-        default: true
-      Linux:
-        description: 'Build and Upload Linux?'
-        type: boolean
-        required: true
-        default: true
-      Mac:
-        description: 'Build and Upload Mac?'
-        type: boolean
-        required: true
-        default: true
-
-jobs:  
-# =====================================================
-# ====================== Linux ========================
-# =====================================================
-  linux-build:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.Linux == 'true' }}
-    timeout-minutes: 7
+  push:
+    branches: ["master"]
+    paths:
+      - '**/*.cpp'
+  pull_request:
+    branches: ["master"]
+    paths:
+      - '**/*.cpp'
+env:
+  LIBNAME: partialtrack
+jobs:
+  macos-universal-build:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+        precision: [32, 64]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
-      
-      - uses: actions/setup-python@v4
+      - name: Install PureData and Deps
+        run: |
+          brew install pd
+      - name: Build Object for Arm
+        if: ${{ matrix.arch == 'arm64' }}
+        run: |
+          cd Libraries/agsl/ampl/thirdparty/asl
+          git checkout 2f5d9de
+          cd ../../../../..
+          cmake . -B build -DCMAKE_OSX_ARCHITECTURES=arm64 -DPD_FLOATSIZE=${{ matrix.precision }} -DPD_INSTALL_LIBS=True -DPDLIBDIR=./
+          cmake --build build -j $(sysctl -n hw.logicalcpu)
+      - name: Build Object for Intel
+        if: ${{ matrix.arch == 'amd64' }}
+        run: |
+          cmake . -B build -DPD_FLOATSIZE=${{ matrix.precision }} -DCMAKE_OSX_ARCHITECTURES=x86_64 -DPD_INSTALL_LIBS=True -DPDLIBDIR=./
+          cmake --build build -j $(sysctl -n hw.logicalcpu)
+      - name: Upload Object
+        uses: actions/upload-artifact@v4
         with:
-          python-version: '3.10'
-      
-      - name: Install Build Dependencies
-        run: |
-          sudo apt-get install puredata -y
-          sudo apt install software-properties-common -y
-          sudo apt-get update
-          sudo apt-get install libsndfile1-dev
-          sudo apt-get install libgsl0-dev
-          sudo apt-get install patchelf
-
-      - name: Build
-        run: make 
-      
-      - name: Copy files 
-        run: |
-          mkdir smspd
-          cp sms.pd_linux smspd
-          cp libsms.so smspd
-          mkdir smspd/src
-          cp src/* smspd/src -r
-          ./resources/localdeps/localdeps.linux.sh smspd/sms.pd_linux
-                
-      - name: Configure Deken
-        env:
-          DEKEN_PASSWORD: ${{ secrets.DEKEN_PASSWORD }}
-          DEKEN_USERNAME: ${{ secrets.DEKEN_USERNAME }}
-        run: |
-          curl https://raw.githubusercontent.com/pure-data/deken/main/developer/deken > deken
-          chmod 755 ./deken
-          mkdir ~/.deken
-          cp help/* smspd -r
-          python3 -m venv ~/.deken/virtualenv/
-          source ~/.deken/virtualenv/bin/activate
-          python3 -m pip install hy==0.19
-          ./deken upgrade --self
-          ./deken package smspd -v ${{ github.event.inputs.ObjVersion }} -n smspd 
-          echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
-          echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-          ./deken upload *.dek
-        continue-on-error: true
-
-      - name: Upload Deken
-        env:
-          DEKEN_PASSWORD: ${{ secrets.DEKEN_PASSWORD }}
-          DEKEN_USERNAME: ${{ secrets.DEKEN_USERNAME }}
-        run: |
-          source ~/.deken/virtualenv/bin/activate
-          echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
-          echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-          ./deken upload *.dek
-
-# =====================================================
-# ====================== Windows ======================
-# =====================================================
-
+          name: ${{env.LIBNAME}}-macos-${{matrix.arch}}-${{matrix.precision}}
+          path: ${{env.LIBNAME}}
   windows-build:
     runs-on: windows-latest
-    if: ${{ github.event.inputs.Windows == 'true' }}
-    timeout-minutes: 15
+    strategy:
+      matrix:
+        compiler: [mingw] # CHANGE: Choose between a compiler, you don't need boths
+        arch: [amd64]
+        precision: [32, 64]
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-
-    - if: runner.os == 'Windows'
-      name: "Install mingw deps"
-      uses: msys2/setup-msys2@v2
-      with:
-          install: make autoconf automake libtool mingw-w64-x86_64-gcc libtool mingw-w64-x86_64-libwinpthread-git mingw-w64-x86_64-libsystre mingw-w64-x86_64-dlfcn unzip mingw-w64-x86_64-libsndfile mingw-w64-x86_64-gsl mingw-w64-x86_64-cmake mingw-w64-x86_64-ntldd
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - if: matrix.compiler == 'mingw'
+        name: Set up Msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: mingw64
+          install: make mingw-w64-x86_64-gcc mingw64/mingw-w64-x86_64-cmake
           update: false
-
-    - name: Configure Environment
-      run: |
-        choco install puredata --yes
-
-    - if: runner.os == 'Windows'
-      name: Build smspd and Mk
-      shell: msys2 {0}
-      run: |
-        make
-        mv sms.dll sms.m_amd64
-        mkdir smspd\\
-        mkdir smspd\\src\\
-        cp help/*.pd smspd\\
-        cp src/* smspd/src -r
-        rm smspd/src/*.o
-        cp sms.m_amd64 smspd\\
-        cp libsms.dll smspd\\
-        ./resources/localdeps/localdeps.win.sh smspd/sms.m_amd64
-        ./resources/localdeps/localdeps.win.sh smspd/libsms.dll
-      
-    - if: runner.os == 'Windows'
-      name: Build smspd
-      env:
-        DEKEN_PASSWORD: ${{ secrets.DEKEN_PASSWORD }}
-        DEKEN_USERNAME: ${{ secrets.DEKEN_USERNAME }}
-      shell: msys2 {0}
-      run: |
-        mkdir ~/.deken
-        echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
-        echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-        wget https://github.com/pure-data/deken/releases/download/v0.9.2/deken_Windows64.zip
-        unzip deken_Windows64.zip
-        echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
-        echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-        ./deken package smspd -v ${{ github.event.inputs.ObjVersion }} -n smspd
-        ./deken upload *.dek
-
-# =====================================================
-# ======================== Mac ========================
-# =====================================================
-
-  macos-intel-build:
-    runs-on: macos-latest
-    if: ${{ github.event.inputs.Mac == 'true' }}
-    timeout-minutes: 10
+      # ──────────────────────────────────────
+      - name: Install winget
+        uses: Cyberboss/install-winget@v1
+      - name: Install PureData Float 32
+        if: matrix.precision == '32'
+        run: |
+          winget install -e --id MillerPuckette.PureData --accept-source-agreements
+      - name: Install PureData Float 64
+        if: matrix.precision == '64'
+        run: |
+          winget install -e --id MillerPuckette.Pd64 --accept-source-agreements
+      - name: Configure and build
+        shell: msys2 {0}
+        run: |
+          cmake . -B build -DPD_FLOATSIZE=${{ matrix.precision }} -DPD_INSTALL_LIBS=True -DPDLIBDIR=./
+          cmake --build build
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{env.LIBNAME}}-f${{ matrix.precision }}-windows-${{ matrix.compiler }}
+          path: ${{env.LIBNAME}}
+  linux-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, aarch64, arm]
+        precision: [32, 64]
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-        fetch-depth: 0
-
-    - name: set Enviroment
-      run: |
-        brew install --cask pd
-        mkdir smspd
-        brew install gsl
-        brew install libsndfile
-
-    - name: Build
-      run: make
-
-    - name: Do ld
-      run: ls -l
-
-    - name: Copy files to smspd
-      run: |
-        cp sms.pd_darwin smspd
-        cp libsms.dylib smspd
-        mkdir smspd/resources
-        mkdir smspd/src
-        cp -r src/*.c smspd/src
-        cp -r src/*.h smspd/src
-        cp -r help/*.pd smspd
-
-    - name: Copy dependencies
-      run: |
-        ./resources/localdeps/localdeps.macos.sh smspd/sms.d_amd64
-        ./resources/localdeps/localdeps.macos.sh smspd/libsms.dylib
-
-    - name: Change sms to look for libsms.dylib in @loader_path/
-      run: |
-        install_name_tool -add_rpath @loader_path/ sms.pd_darwin
-
-    
-    - name: Check dependencies
-      run: |
-        otool -L smspd/sms.pd_darwin
-        otool -L smspd/libsms.dylib
-
-    - name: Run PureData Patch
-      run: |
-        cp resources/test.pd ./
-        /Applications/Pd-*.app/Contents/Resources/bin/pd -stderr -nogui test.pd
-
-    - name: Upload Deken
-      env:
-        DEKEN_PASSWORD: ${{ secrets.DEKEN_PASSWORD }}
-        DEKEN_USERNAME: ${{ secrets.DEKEN_USERNAME }}
-      run: |
-        wget https://github.com/pure-data/deken/releases/download/v0.9.2/deken_macOS.zip -O deken_macOS.zip
-        unzip deken_macOS.zip
-        mkdir ~/.deken
-        echo username=${{ secrets.DEKEN_USERNAME }} > ~/.deken/config
-        echo password=${{ secrets.DEKEN_PASSWORD }} >> ~/.deken/config
-        ./deken package smspd -v ${{ github.event.inputs.ObjVersion }} -n smspd
-        ./deken upload *.dek
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - name: PureData Sources
+        run: |
+          sudo apt update
+          sudo add-apt-repository ppa:pure-data/pure-data -y
+          sudo apt install puredata -y
+      - name: Install aarch64 gcc
+        if: matrix.arch == 'aarch64'
+        run: |
+          sudo apt install gcc-aarch64-linux-gnu -y
+          sudo apt install g++-aarch64-linux-gnu -y
+      - name: Install arm gcc
+        if: matrix.arch == 'arm'
+        run: |
+          sudo apt install gcc-arm-linux-gnueabihf -y
+          sudo apt install g++-arm-linux-gnueabihf -y
+      - name: Build Object
+        if: matrix.arch == 'amd64'
+        run: |
+          cmake . -B build -DPD_FLOATSIZE=${{ matrix.precision }} -DPD_INSTALL_LIBS=True -DPDLIBDIR=./
+          cmake --build build -- -j$(nproc)
+      - name: Build Object
+        if: matrix.arch == 'aarch64'
+        run: |
+          cmake . -B build -DPD_FLOATSIZE=${{ matrix.precision }} -DCMAKE_SYSTEM_PROCESSOR=aarch64 -DPD_INSTALL_LIBS=True -DPDLIBDIR=./
+          cmake --build build -- -j$(nproc)
+      - name: Build Object
+        if: matrix.arch == 'arm'
+        run: |
+          cmake . -B build -DPD_FLOATSIZE=${{ matrix.precision }} -DCMAKE_SYSTEM_PROCESSOR=arm -DPD_INSTALL_LIBS=True -DPDLIBDIR=./
+          cmake --build build -- -j$(nproc)
+      - name: Upload Object
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.LIBNAME }}-linux-${{matrix.arch}}-${{matrix.precision}}
+          path: ${{env.LIBNAME}}
+  package-artifacts:
+    needs: [macos-universal-build, windows-build, linux-build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '${{ env.LIBNAME }}-*'
+          path: artifacts
+          merge-multiple: true
+      - name: Clear tmp files
+        run: rm -f artifacts/*.pdb
+      - name: Upload artifacts zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{env.LIBNAME}}-ALL-binaries
+          path: artifacts

@@ -1,0 +1,12 @@
+[submodule "Resources/pd.build"]
+	path = Resources/pd.build
+	url = git@github.com:charlesneimog/pd.build.git
+[submodule "Libraries/gsl"]
+	path = Libraries/gsl
+	url = https://github.com/ampl/gsl.git
+[submodule "Libraries/libsms"]
+	path = Libraries/libsms
+	url = https://github.com/libsms/libsms.git
+[submodule "Resources/pd.cmake"]
+	path = Resources/pd.cmake
+	url = https://github.com/pure-data/pd.cmake
